@@ -1,0 +1,1 @@
+A small example of custom job statuses implementation (pain in the arse because of unscalable system). jquery + cshtml example

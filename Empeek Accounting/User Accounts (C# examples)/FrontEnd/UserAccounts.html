@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>User Accounts</title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <div class="preloader" ng-class="{active: users.pageLoading}">
+        <img alt="" src="/Assets/images/loader.gif" />
+    </div>
+    <div class="container" ng-cloak>
+        <div class="row top-buffer">
+            <div class="col-xs-12 data-container">
+                <a class="btn btn-info" ng-click="users.syncUsers()" ng-disabled="users.syncInProgress">Sync Users</a>
+                <img ng-if="users.syncInProgress" src="/Assets/images/loader.gif">
+                <div style="display: inline-block">{{users.syncMessage}}</div>
+                <div style="float:right">
+                    <label for="ShowAll">Show all </label>
+                    <input type="checkbox" id="ShowAll" ng-model="showAll" ng-change="users.showUsers()" />
+                </div>
+                <table class="table top-buffer table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Full name</th>
+                            <th>Email</th>
+                            <th>Mobile phone</th>
+                            <th>Active</th>
+                        </tr>
+                    </thead>
+                    <tr ng-repeat="person in users.users | filter: users.usersFilter">
+                        <td>{{person.Id}}</td>
+                        <td><a ng-href="#/userAccounts/{{person.Id}}">{{person.FullName}}</a></td>
+                        <td>{{person.Email}}</td>
+                        <td>{{person.PhoneNumber}}</td>
+                        <td><img ng-src="/Assets/images/{{person.IsActive ? 'green' : 'red'}}Check.png"/></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

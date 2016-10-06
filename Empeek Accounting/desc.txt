@@ -1,0 +1,2 @@
+BACKEND - user account model, controller, service and repository are presented here. also the example of Teamwork API implementation is presented
+FRONTEND - a micro example of angular + bootstrap 

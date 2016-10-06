@@ -1,0 +1,142 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model WorkforceFm.WebUI.Models.PostCustomFieldValueModel
+
+@{
+    ViewBag.Title = "Job Statuses";
+    ViewBag.ModuleTab = "settings";
+    Layout = "~/Views/Shared/_NewLayout.cshtml";
+    var companyStatuses = get_company_field_items_for("jobstatus", "order_number.asc");
+    var defaultFieldIds = new[] {5, 6, 7, 9, 11, 13};
+    var descriptionTexts = new[]
+    {
+        "Shows when a job is not yet scheduled",
+        "Shows when a job has been scheduled",
+        "Shows when field worker is travelling",
+        "Shows when a job has been completed",
+        "Shows when a job has been paused",
+        "Shows when a job has been cancelled"
+    };
+}
+<head>
+    <link rel="stylesheet" href="@Url.VersionedContent("~/assests/css/bootstrap-colorpicker.css")" />
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<div class="main-popup so-small normal-plh dis-no reset-statuses-popup" id="reset-statuses-popup">
+    <div class="main-popup-biggin">
+        <div>
+            <button class="x-butt main-popup-closer fright" onclick="popupCloser('reset-statuses-popup')"></button>
+        </div>
+        <div class="schedule-collision">
+            <div class="popUp-header-text">
+                <p>
+                    Re-assign statuses
+                </p>
+            </div>
+            <div class="popUp-description-text" style="padding-bottom: 12px;">
+                <span>
+                    What should happen with jobs that have the statuses you are deleting?
+                </span>
+            </div>
+            <div id="reassigning-div" class="full-width pos-rel">
+
+            </div>
+
+        </div>
+        <div class="full-width">
+            <button class="orange-butt dis-iblock mt20 fright dis-no" id="delete-status">Save</button>
+            <button class="orange-butt dis-iblock mt20 fright dis-no" id="reset-statuses">Save</button>
+            <button class="orange-butt dis-block white-o mt20" onclick="popupCloser('reset-statuses-popup')">Cancel</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="full-width fleft" id="top-menu">
+    <button class="menu-switch"></button>
+    <ul class="fleft">
+        <li><a href="@Url.Action("CompanyInformation", "Settings")">Company</a></li>
+        <li><a href="@Url.Action("JobTemplates", "Settings")" class="active">Work</a></li>
+        @*<li><a href="@Url.Action("Integration", "Settings")">Import and Integrations</a></li>*@
+    </ul>
+</div>
+
+<div class="full-width fleft mt30" style="background-color: #fff!important">
+    <div class="addit-menu-1 fleft">
+        <h2 class="actual-h2">Settings</h2>
+
+        <ul class="full-width nav nav-tabs">
+            <li><a href="@Url.Action("JobTemplates", "Settings")">Job Templates</a></li>
+            <li><a href="@Url.Action("ServicesItems", "Settings")">Services & Items</a></li>
+            <li><a href="@Url.Action("CustomFields", "Settings")">Custom fields</a></li>
+            <li><a href="@Url.Action("JobStatuses", "Settings")" class="active">Job statuses</a></li>
+        </ul>
+    </div>
+    <div class="main-min ml28 fleft">
+        <h1 class="full-width actual-h2 mb12">Job Statuses</h1>
+
+        <div class="full-width font-semi-bold font88 pl10 font18 font-normal">
+            <span>Status settings apply across the system including mobile apps.</span>
+        </div>
+
+        <div class="full-width cust-table mt10">
+            <div class="full-width retouchable-area">
+                @foreach (var jobStatus in companyStatuses)
+                {
+                    <div class="fleft job-status-list-item retouchable-brick retouchable-trigger" job-status-id="@jobStatus.company_field_id" data-retouchable-eq="@jobStatus.order_number">
+                        <div class="fleft font4d status-container pos-rel">
+
+                            <i class="mr5 dis-iblock status-circle" style="background-color: @jobStatus.color">
+                                @if (!jobStatus.is_required)
+                                {
+                                    <input class="status-color-picker" value="@jobStatus.color" />
+                                }
+                            </i>
+
+                            <input type="text" maxlength="20" value="@jobStatus.custom_name" class="gr-br-field smally job-status-name" />
+                            @if (defaultFieldIds.Any(df => df == jobStatus.default_field_id))
+                            {
+                                <div class="status-description">@descriptionTexts[Array.IndexOf(defaultFieldIds, jobStatus.default_field_id)]</div>
+                            }
+                            @if (!jobStatus.is_required)
+                            {
+                                <a class="anchor-link font10 delete-status-button pos-abs ml10" style="bottom: 5px">
+                                    <img src="/assests/images/Rejected.png">
+                                </a>
+                            }
+                        </div>
+                        <div class="jws-10 right-moveme fright mt7">
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="mt20 font12">
+            <a class="anchor-link fleft mt7" id="add-status-button">Add status</a>
+        </div>
+        <div class="full-width mt40">
+            <div class="dis-iblock half-width fleft reset-statuses-container">
+                <a id="reset-job-statuses" class="anchor-link full-width">Reset all statuses</a>
+                <a id="reset-system-statuses-names" class="anchor-link full-width" style="padding-top: 9px">Reset statuses to default names</a>
+            </div>
+            <div class="dis-iblock fright save-job-statuses">
+                <button id="save-job-statuses" class="orange-butt" >Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Footer
+{
+    <script src="@Url.VersionedContent("~/assests/js/jquery.toDictionary.js")" type="text/javascript"></script>
+    <script src="@Url.VersionedContent("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.VersionedContent("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+    <script src="@Url.VersionedContent("~/assests/js/retouch.js")"></script>
+    <script src="@Url.VersionedContent("~/assests/js/bootstrap-colorpicker/bootstrap-colorpicker.js")"></script>
+    <script src="@Url.VersionedContent("~/assests/js/views/settings/jobStatuses.js")"></script>
+
+}
+
+
+
+
